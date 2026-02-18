@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import socket
 import sys
 from pathlib import Path
 from typing import Any, Dict
+from urllib.parse import urlparse
 
 from adapter.adapter_manager import AdapterManager
 from adapter.context_builder import build_context
@@ -51,6 +53,23 @@ def _should_enable(section: Dict[str, Any], prefs: Dict[str, Any], key: str) -> 
     return True
 
 
+def _check_openclaw_gateway(config: Dict[str, Any]) -> bool:
+    openclaw = config.get("openclaw", {}) if isinstance(config, dict) else {}
+    gateway_url = openclaw.get("gateway_url", "http://127.0.0.1:18789/v1")
+    parsed = urlparse(gateway_url)
+    host = parsed.hostname or "127.0.0.1"
+    port = parsed.port or 18789
+
+    try:
+        with socket.create_connection((host, port), timeout=2):
+            return True
+    except OSError:
+        LOGGER.error(
+            "OpenClaw Gateway not running. Start it with: openclaw gateway"
+        )
+        return False
+
+
 async def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
@@ -63,6 +82,9 @@ async def main() -> None:
         config = load_config("conf.yaml")
     except FileNotFoundError as exc:
         LOGGER.error("%s", exc)
+        return
+
+    if not _check_openclaw_gateway(config):
         return
 
     user_prefs = load_user_prefs()

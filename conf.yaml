@@ -1,8 +1,8 @@
 # OpenClaw cloud brain
 openclaw:
-  base_url: "https://your-openclaw-endpoint/v1"
-  api_key: "${OPENCLAW_API_KEY}"
-  model: "openclaw-default"
+  gateway_url: "http://127.0.0.1:18789/v1"
+  token: "${OPENCLAW_GATEWAY_TOKEN}"
+  agent_id: "main"
   timeout_seconds: 10
   system_prompt: |
     你是一只名叫 Claw 的可爱桌宠。你能感知用户的桌面状态。
