@@ -1,0 +1,16 @@
+L2DClaw User License Agreement
+
+By using this software, you acknowledge and agree to the following terms:
+
+1. No Warranty
+   This software is provided "as is" without warranty of any kind, express or implied.
+
+2. User Responsibility
+   You are responsible for your use of the software and any consequences that result.
+
+3. Privacy Notice
+   Optional features such as screen content recognition may transmit screenshots to a
+   remote service if enabled. Only enable such features if you understand and accept
+   the associated privacy risks.
+
+If you do not agree with these terms, do not use this software.

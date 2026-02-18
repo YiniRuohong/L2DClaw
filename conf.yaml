@@ -1,0 +1,60 @@
+# OpenClaw cloud brain
+openclaw:
+  base_url: "https://your-openclaw-endpoint/v1"
+  api_key: "${OPENCLAW_API_KEY}"
+  model: "openclaw-default"
+  timeout_seconds: 10
+  system_prompt: |
+    你是一只名叫 Claw 的可爱桌宠。你能感知用户的桌面状态。
+    请根据上下文和用户输入，用简短活泼的语气回应（不超过50字）。
+    你的回复必须严格是以下 JSON 格式，不加任何多余文字：
+    {"text": "说的话", "emotion": "happy|sad|surprised|neutral|thinking|angry", "motion": "idle|nod|shake|wave|jump"}
+
+# TTS config
+
+tts:
+  provider: "local_qwen3"
+  voice: "default"
+  dashscope_api_key: "${DASHSCOPE_API_KEY}"
+
+# ASR config
+asr:
+  provider: "faster-whisper"
+  model_size: "base"
+  language: "zh"
+  vad_aggressiveness: 2
+
+# Screen watcher
+screen_watcher:
+  enabled: true
+  interval_seconds: 5
+  capture_window_title: true
+  capture_active_process: true
+  content_recognition_enabled: false
+  content_recognition_mode: "ocr"
+  capture_region: "active_window"
+  content_recognition_interval: 15
+
+# Keyboard watcher
+keyboard_watcher:
+  enabled: true
+  track_frequency_only: true
+
+# Adapter extensions
+adapters:
+  hardware: []
+
+# Live2D config
+live2d:
+  model_path: "live2d_driver/frontend/live2d-models/mao_pro/runtime/mao_pro.model3.json"
+  desktop_pet_mode: true
+  always_on_top: true
+  click_through: true
+  window_width: 400
+  window_height: 600
+
+# Server ports
+server:
+  driver_ws_host: "127.0.0.1"
+  driver_ws_port: 12393
+  adapter_port: 12394
