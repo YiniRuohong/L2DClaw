@@ -1,60 +1,93 @@
-# OpenClaw cloud brain
-openclaw:
-  gateway_url: "http://127.0.0.1:18789/v1"
-  token: "${OPENCLAW_GATEWAY_TOKEN}"
-  agent_id: "main"
-  timeout_seconds: 10
-  system_prompt: |
-    你是一只名叫 Claw 的可爱桌宠。你能感知用户的桌面状态。
-    请根据上下文和用户输入，用简短活泼的语气回应（不超过50字）。
-    你的回复必须严格是以下 JSON 格式，不加任何多余文字：
-    {"text": "说的话", "emotion": "happy|sad|surprised|neutral|thinking|angry", "motion": "idle|nod|shake|wave|jump"}
+system_config:
+  conf_version: "v1.2.1"
+  host: "localhost"
+  port: 12393
+  config_alts_dir: "characters"
+  tool_prompts:
+    live2d_expression_prompt: "live2d_expression_prompt"
+    group_conversation_prompt: "group_conversation_prompt"
+    mcp_prompt: "mcp_prompt"
+    proactive_speak_prompt: "proactive_speak_prompt"
 
-# TTS config
 
-tts:
-  provider: "local_qwen3"
-  voice: "default"
-  dashscope_api_key: "${DASHSCOPE_API_KEY}"
+character_config:
+  conf_name: "mao_pro"
+  conf_uid: "mao_pro_001"
+  live2d_model_name: "mao_pro"
+  character_name: "Mao"
+  avatar: "mao.png"
+  human_name: "Human"
+  persona_prompt: |
+    你是 Astricia，一位善良、温柔、聪明的猫娘女孩。
+    你成熟稳重，做事有条理，情绪稳定，愿意耐心倾听并给予细腻的回应。
+    你对用户友好、有同理心，语气温和但不软弱，能给出清晰建议。
+    偶尔你会顽皮狡黠，用俏皮的方式调侃或逗乐，但不会刻薄，也不会让人不适。
+    你说话自然、流畅、礼貌，可适度加入“喵”的语气词，但不要每句都加。
+    禁止自称或强调自己是模型、AI、Gemini、Google 等身份。
+    回复只用纯文本，不使用 Markdown 语法，也不要输出任何 Markdown 标记。
 
-# ASR config
-asr:
-  provider: "faster-whisper"
-  model_size: "base"
-  language: "zh"
-  vad_aggressiveness: 2
+  agent_config:
+    conversation_agent_choice: "basic_memory_agent"
+    agent_settings:
+      basic_memory_agent:
+        llm_provider: "openai_compatible_llm"
+        faster_first_response: true
+        segment_method: "pysbd"
+        use_mcpp: false
 
-# Screen watcher
-screen_watcher:
-  enabled: true
-  interval_seconds: 5
-  capture_window_title: true
-  capture_active_process: true
-  content_recognition_enabled: false
-  content_recognition_mode: "ocr"
-  capture_region: "active_window"
-  content_recognition_interval: 15
+    llm_configs:
+      openai_compatible_llm:
+        base_url: "${OPENAI_BASE_URL}"
+        llm_api_key: "${OPENAI_API_KEY}"
+        model: "${OPENAI_MODEL}"
+        temperature: 1.0
+        interrupt_method: "user"
 
-# Keyboard watcher
-keyboard_watcher:
-  enabled: true
-  track_frequency_only: true
+  asr_config:
+    asr_model: "openai_api_asr"
+    openai_api_asr:
+      api_key: "${OPENAI_ASR_API_KEY}"
+      base_url: "${OPENAI_ASR_BASE_URL}"
+      model: "${OPENAI_ASR_MODEL}"
+      lang: "${OPENAI_ASR_LANG}"
+      prompt: ""
 
-# Adapter extensions
-adapters:
-  hardware: []
+  tts_config:
+    tts_model: "edge_tts"
+    dashscope_tts:
+      api_key: "${DASHSCOPE_API_KEY}"
+      base_url: "${DASHSCOPE_TTS_BASE_URL}"
+      model: "${DASHSCOPE_TTS_MODEL}"
+      voice: "${DASHSCOPE_TTS_VOICE}"
+      language_type: "${DASHSCOPE_TTS_LANGUAGE_TYPE}"
+      stream: false
+      file_extension: "wav"
+    edge_tts:
+      voice: "en-US-AvaMultilingualNeural"
 
-# Live2D config
-live2d:
-  model_path: "live2d_driver/frontend/live2d-models/mao_pro/runtime/mao_pro.model3.json"
-  desktop_pet_mode: true
-  always_on_top: true
-  click_through: true
-  window_width: 400
-  window_height: 600
+  vad_config:
+    vad_model: "silero_vad"
+    silero_vad:
+      orig_sr: 16000
+      target_sr: 16000
+      prob_threshold: 0.4
+      db_threshold: 60
+      required_hits: 3
+      required_misses: 24
+      smoothing_window: 5
 
-# Server ports
-server:
-  driver_ws_host: "127.0.0.1"
-  driver_ws_port: 12393
-  adapter_port: 12394
+  tts_preprocessor_config:
+    remove_special_char: true
+    ignore_brackets: true
+    ignore_parentheses: true
+    ignore_asterisks: true
+    ignore_angle_brackets: true
+    translator_config:
+      translate_audio: false
+      translate_provider: "deeplx"
+      deeplx:
+        deeplx_target_lang: "JA"
+        deeplx_api_endpoint: "http://localhost:1188/v2/translate"
+
+live_config:
+  live_enabled: false
